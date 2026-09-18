@@ -1,3 +1,42 @@
+## Git 기본 흐름
+
+### git add
+- 다음 commit에 포함할 변경사항을 Staging Area에 올리는 작업
+
+### git commit
+- Staging Area의 변경사항을 로컬 Git 히스토리에 기록하는 작업
+
+### git push
+- 로컬 commit을 원격 저장소(GitHub)에 전송하는 작업
+
+### git merge
+- 서로 다른 브랜치의 변경사항을 하나로 통합하는 작업
+
+### 기본 흐름
+
+Working Directory
+→ Staging Area
+→ Local Repository
+→ Remote Repository
+
+명령어 기준:
+
+수정
+→ git add
+→ git commit
+→ git push
+
+브랜치 통합:
+
+feature branch
+→ Pull Request
+→ merge
+→ master
+
+
+
+
+
 # Chapter 00 - Development Environment
 
 ## Lesson 01 - uv와 Python 프로젝트 환경
@@ -216,3 +255,71 @@ CI(Continuous Integration)는 코드가 Git 저장소에 올라왔을 때
 
 ### Staging Area란?
   - 다음 commit에 포함할 변경사항을 임시로 선택해두는 영역
+
+
+
+
+
+## Lesson 05 - CI 실패와 Quality Gate
+
+### Quality Gate란?
+
+- 다음 단계로 넘어가기 전에 반드시 만족해야 하는 품질 조건
+- 현재 프로젝트에서는 Formatter, Linter, Test가 모두 통과해야 Quality Gate를 통과한 것으로 볼 수 있다.
+
+### CI 실패 실험
+
+- `test_smoke.py`의 테스트를 일부러 실패하도록 변경
+- 로컬에서 `pytest` 실패 확인
+- 실패 상태를 GitHub에 push
+- GitHub Actions에서 `Run tests` 단계가 실패하면서 CI 전체가 실패하는 것을 확인
+- 테스트를 다시 정상 상태로 복구한 뒤 push하여 CI가 다시 성공하는 것을 확인
+
+### CI가 실패한 원인
+
+- `assert 1 + 1 == 3`이라는 실패하는 테스트를 의도적으로 작성했기 때문
+- Formatter와 Linter는 통과했지만 Test 단계가 실패하여 CI 전체가 실패함
+
+### CI 실패와 Git Push의 관계
+
+- CI는 push된 코드의 문제를 검증할 수 있지만, 기본 설정만으로는 Git Push 자체를 막지는 않는다.
+- 따라서 문제가 있는 commit이 이미 `master`에 들어간 뒤 CI가 실패할 수도 있다.
+- 중요한 브랜치의 진입을 제어하려면 `Branch Protection과 Pull Request 기반 개발 방식`이 필요하다.
+
+### Branch Protection이 필요한 이유
+
+- 중요한 브랜치에 문제가 있는 코드가 직접 들어가는 것을 방지하기 위해 사용한다.
+- 예를 들어 CI가 성공하지 않으면 Pull Request를 merge할 수 없도록 규칙을 설정할 수 있다.
+
+### Pull Request 기반 개발 흐름
+
+1. feature branch 생성
+2. 코드 작성
+3. 로컬 검사
+4. feature branch push
+5. Pull Request 생성
+6. CI 실행
+7. CI 통과 및 Code Review
+8. master로 merge
+
+### 현재 CI의 한계
+
+- 현재는 `master`에 직접 push할 수 있다.
+- CI가 실패해도 commit은 이미 `master`에 들어갈 수 있다.
+- 아직 Branch Protection이 없기 때문에 CI 결과를 merge 조건으로 강제하지 못한다.
+
+
+
+
+
+## Lesson 06 - Branch와 Pull Request
+
+### Branch를 사용하는 이유
+
+### Feature Branch란?
+
+### Pull Request란?
+
+### PR과 Merge의 차이
+
+### Branch Protection이 필요한 이유
