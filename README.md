@@ -385,3 +385,6 @@ feature branch
 → CI 통과
 → Merge
 → master
+
+- GitHub Ruleset의 required status check에는 CI Workflow의 job 이름인 `quality`를 지정했다.
+- Required status check가 실패하면 Pull Request의 Merge 버튼이 비활성화되어 master 진입이 실제로 차단되는 것을 확인했다.
