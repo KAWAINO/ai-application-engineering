@@ -1,4 +1,6 @@
-## Git 기본 흐름
+# Chapter 00 - Development Environment
+
+## 0. Git 기본 흐름
 
 ### git add
 - 다음 commit에 포함할 변경사항을 Staging Area에 올리는 작업
@@ -12,7 +14,7 @@
 ### git merge
 - 서로 다른 브랜치의 변경사항을 하나로 통합하는 작업
 
-### 기본 흐름
+### 전체 흐름
 
 Working Directory
 → Staging Area
@@ -30,124 +32,87 @@ Working Directory
 
 feature branch
 → Pull Request
+→ CI
 → merge
 → master
 
 
-
-
-
-# Chapter 00 - Development Environment
-
 ## Lesson 01 - uv와 Python 프로젝트 환경
 
-
 ### uv란?
-
 Python 프로젝트에서 Python 버전, 가상환경, dependency를 관리하기 위한 도구.
-
-
 
 ### 주요 파일
 
 - `.python-version`
-  - 프로젝트가 사용할 Python 버전을 정의
+  - 프로젝트에서 사용할 Python 버전 정의
 
 - `pyproject.toml`
-  - 프로젝트 정보와 dependency를 정의
-
-- `.venv`
-  - 실제 로컬 Python 실행 환경
-
-
-
-### 사용한 명령어
-
-- `uv 설치`
-  - curl -LsSf https://astral.sh/uv/install.sh | sh
-
-- `터미널 재시작 후 확인`
-  - uv --version
-
-- `프로젝트 디렉터리 이동`
-  - cd /c/경로/ai-application-engineering
-
-- `현재 시스템의 Python 3.13 확인`
-  - python --version
-
-- `프로젝트 Python을 3.13으로 고정`
-  - uv python pin 3.13
-
-- `uv 프로젝트 초기화`
-  - uv init
-
-- `가상환경 생성`
-  - uv venv
-
-- `uv 환경에서 Python 버전 확인`
-  - uv run python --version
-
-- `생성 파일 확인`
-  - ls -la
-
-
-
-### 내가 이해한 내용
-
-- `.python-version`
-  - 어떤 Python 버전을 사용 하는지
-
-- `pyproject.toml`
-  - 프로젝트가 무엇이고 무엇을 필요로 하는지
+  - 프로젝트 정보와 dependency 정의
 
 - `uv.lock`
-  - 실제로 어떤 dependency 버전 조합을 사용 하는지
+  - 실제 dependency resolution 결과와 버전 조합 기록
 
 - `.venv/`
-  - 프로젝트에서 사용하는 가상 환경
+  - 프로젝트에서 실제 사용하는 로컬 Python 가상환경
+
+### 핵심 이해
+
+- `.python-version`
+  - 어떤 Python 버전을 사용할지 정의
+
+- `pyproject.toml`
+  - 프로젝트가 무엇이고 어떤 dependency를 필요로 하는지 정의
+
+- `uv.lock`
+  - 실제 어떤 dependency 버전 조합을 사용할지 기록
+
+- `.venv/`
+  - 실제로 설치된 프로젝트 전용 실행 환경
 
 - `uv`
-  - 위 환경들을 관리하는 도구
-
-
-
+  - 위 환경과 dependency를 관리하는 도구
 
 
 ## Lesson 02 - Dependency 관리
 
 ### dependency란?
-
 - 프로젝트가 필요로 하는 외부 패키지
 
 ### dev dependency란?
+- 개발 및 테스트 과정에서 사용하는 패키지
 
-- 개발/테스트 시 사용하는 패키지
+### direct dependency와 transitive dependency
 
-### direct dependency와 transitive dependency 차이
+- direct dependency
+  - 내가 직접 추가한 패키지
 
-- direct dependency: 내가 직접 추가한 패키지(직접 의존성)
-- transitive dependency: direct dependency가 내부적으로 필요로 하는 패키지(간접 의존성)
+- transitive dependency
+  - direct dependency가 내부적으로 필요로 하는 패키지
 
-### uv add --dev pytest
+### 주요 명령어
 
-- 이 프로젝트의 개발용 dependency로 pytest 추가
+- `uv add --dev pytest`
+  - 개발용 dependency로 pytest 추가
 
-### uv tree
+- `uv tree`
+  - 프로젝트 dependency 관계를 트리 형태로 확인
 
-- 프로젝트의 dependency 관계를 트리 형태로 확인하는 명령어
+### pyproject.toml과 uv.lock 차이
 
-### pyproject.toml과 uv.lock의 역할 차이
+- `pyproject.toml`
+  - 프로젝트의 dependency 요구사항 정의
 
-- pyproject.toml: 프로젝트 정보와 필요한 dependency를 정의하는 파일
-- uv.lock: dependency resolution 결과와 실제 사용할 버전 조합을 기록하는 파일
+- `uv.lock`
+  - dependency resolution 결과와 실제 사용할 버전 조합 기록
 
-### git diff가 비어 있었던 이유
+### Git 관련 확인
 
-- 아직 첫 commit 전이고 파일들이 Git의 추적 대상이 아닌 untracked 상태였기 때문
-- `git add` 후 staged된 변경사항은 `git diff --staged`로 확인할 수 있음
+첫 commit 전의 파일은 untracked 상태이므로 일반 `git diff`에는 나오지 않을 수 있다.
 
+`git add` 후 staged된 변경사항은 다음으로 확인한다.
 
-
+`git diff --staged`
 
 
 ## Lesson 03 - Ruff와 코드 품질
@@ -156,85 +121,63 @@ Python 프로젝트에서 Python 버전, 가상환경, dependency를 관리하�
 - 코드 스타일을 자동으로 정리하는 도구
 
 ### Linter란?
-- 코드에서 잠재적 문제나 스타일 위반을 검사하는 도구
+- 코드에서 잠재적인 문제나 스타일 위반을 검사하는 도구
 
 ### Ruff란?
 - Python용 linter와 formatter 역할을 함께 제공하는 도구
 
 ### 주요 명령어
+
 - `uv run ruff format .`
+- `uv run ruff format --check .`
 - `uv run ruff check .`
 - `uv run ruff check . --fix`
 
 ### 기본 품질 검사 순서
-1. format
-2. lint
-3. test
 
-### 현업에서 중요한 이유
-- 코드 스타일 통일
-- 반복적인 리뷰 감소
-- 잠재적 오류 조기 발견
-- CI 자동화 가능
+1. Format
+2. Lint
+3. Test
 
+### 실습에서 확인한 점
 
-
-
-
-### Ruff 실습에서 확인한 점
-
-- `ruff format`은 코드 형식을 정리하지만 사용하지 않는 변수 같은 논리적 문제는 제거하지 않는다.
+- `ruff format`은 코드 형식을 정리한다.
+- 사용하지 않는 변수 같은 문제는 linter가 잡는다.
 - `ruff check --fix`는 안전하게 수정 가능한 문제만 자동 수정한다.
-- 일부 문제는 자동 수정 시 코드 의미가 바뀔 수 있어 직접 확인하고 수정해야 한다.
 - lint 통과와 test 통과는 서로 다른 의미를 가진다.
-- CI에서는 `ruff format --check`처럼 파일을 수정하지 않고 검사만 수행하는 방식이 적절하다.
-
-
-
-
-
-## CI란?
-
-CI(Continuous Integration)는 코드가 Git 저장소에 올라왔을 때
-자동으로 코드 품질과 테스트를 검증하는 개발 파이프라인이다.
-
-예:
-
-- Formatter 검사
-- Linter 검사
-- Test 실행
-- Build 확인
-
-현재 프로젝트에서는 다음 순서로 CI를 구성할 예정이다.
-
-1. `uv run ruff format --check .`
-2. `uv run ruff check .`
-3. `uv run pytest`
-
-하나라도 실패하면 CI 전체를 실패로 처리한다.
-
-
-
+- CI에서는 파일을 수정하지 않고 `ruff format --check`처럼 검사만 수행하는 방식이 적절하다.
 
 
 ## Lesson 04 - CI와 GitHub Actions
 
 ### CI란?
-  - 코드가 Git 저장소에 올라왔을 때 자동으로 코드 품질과 테스트를 검증하는 개발 파이프라인
+
+CI(Continuous Integration)는 코드 변경이 Git 저장소에 올라왔을 때
+코드 품질과 테스트를 자동으로 검증하는 개발 파이프라인이다.
 
 ### CI가 필요한 이유
-  - 사람이 반복적으로 수행하면 누락하거나 환경에 따라 다르게 실행할 수 있는 검증을 자동화하여, 모든 변경에 동일한 품질 기준을 적용하기 위해 사용한다.
+
+사람이 반복적으로 검증하면 누락하거나 환경에 따라 다르게 수행할 수 있다.
+
+CI를 사용하면 모든 변경사항에 동일한 품질 기준을 자동으로 적용할 수 있다.
 
 ### GitHub Actions란?
-  - CI를 GitHub에서 수행하는 시스템
+- GitHub에서 Workflow를 실행할 수 있는 자동화 시스템
 
 ### Workflow / Job / Step
-  - Workflow: 자동화 전체 정의
-  - Job: Workflow 안의 작업 단위
-  - Step: Job 안에서 실제 실행하는 하나의 단계
+
+- Workflow
+  - 자동화 전체 정의
+
+- Job
+  - Workflow 안의 작업 단위
+
+- Step
+  - Job 안에서 실행되는 개별 작업
 
 ### Trigger란?
-  - Trigger: Workflow를 실행시키는 사건 또는 조건
+- Workflow를 실행시키는 사건 또는 조건
+- 예: `push`, `pull_request`
 
 ### 현재 CI 파이프라인
 
@@ -246,94 +189,88 @@ CI(Continuous Integration)는 코드가 Git 저장소에 올라왔을 때
 6. Linter 검사
 7. Test
 
-### uv sync --locked를 사용하는 이유
-  - 기존 uv.lock을 변경하지 않고, lock 파일에 기록된 dependency 상태를 기준으로 환경을 동기화하기 위해
+### `uv sync --locked`를 사용하는 이유
 
-### 로컬 검사와 CI의 차이
-  - 로컬: 내 개발환경에서 개발자가 실행한다.
-  - CI: 별도의 깨끗한 환경에서 자동으로 실행한다.
+기존 `uv.lock`을 변경하지 않고
+lock 파일에 기록된 dependency 상태를 기준으로 환경을 재현하기 위해 사용한다.
+
+### 로컬 검사와 CI 차이
+
+- 로컬
+  - 내 개발환경에서 개발자가 직접 실행
+  - 필요하면 코드 자동 수정 가능
+
+- CI
+  - 별도의 깨끗한 환경에서 자동 실행
+  - 일반적으로 코드를 수정하지 않고 검증만 수행
 
 ### Staging Area란?
-  - 다음 commit에 포함할 변경사항을 임시로 선택해두는 영역
-
-
-
+- 다음 commit에 포함할 변경사항을 임시로 선택해두는 영역
 
 
 ## Lesson 05 - CI 실패와 Quality Gate
 
 ### Quality Gate란?
-
 - 다음 단계로 넘어가기 전에 반드시 만족해야 하는 품질 조건
-- 현재 프로젝트에서는 Formatter, Linter, Test가 모두 통과해야 Quality Gate를 통과한 것으로 볼 수 있다.
+
+현재 프로젝트에서는 다음이 모두 통과해야 한다.
+
+- Formatter
+- Linter
+- Test
 
 ### CI 실패 실험
 
-- `test_smoke.py`의 테스트를 일부러 실패하도록 변경
+- `test_smoke.py`를 의도적으로 실패하도록 수정
 - 로컬에서 `pytest` 실패 확인
 - 실패 상태를 GitHub에 push
-- GitHub Actions에서 `Run tests` 단계가 실패하면서 CI 전체가 실패하는 것을 확인
-- 테스트를 다시 정상 상태로 복구한 뒤 push하여 CI가 다시 성공하는 것을 확인
-
-### CI가 실패한 원인
-
-- `assert 1 + 1 == 3`이라는 실패하는 테스트를 의도적으로 작성했기 때문
-- Formatter와 Linter는 통과했지만 Test 단계가 실패하여 CI 전체가 실패함
+- GitHub Actions에서 Test 단계 실패 확인
+- 테스트 복구 후 CI 성공 확인
 
 ### CI 실패와 Git Push의 관계
 
-- CI는 push된 코드의 문제를 검증할 수 있지만, 기본 설정만으로는 Git Push 자체를 막지는 않는다.
-- 따라서 문제가 있는 commit이 이미 `master`에 들어간 뒤 CI가 실패할 수도 있다.
-- 중요한 브랜치의 진입을 제어하려면 `Branch Protection과 Pull Request 기반 개발 방식`이 필요하다.
+기본 CI만 사용할 경우:
 
-### Branch Protection이 필요한 이유
+문제 있는 코드
+→ Push 가능
+→ CI 실패
 
-- 중요한 브랜치에 문제가 있는 코드가 직접 들어가는 것을 방지하기 위해 사용한다.
-- 예를 들어 CI가 성공하지 않으면 Pull Request를 merge할 수 없도록 규칙을 설정할 수 있다.
+즉 CI는 문제를 발견하지만,
+기본 설정만으로는 master 진입 자체를 막지 않는다.
 
-### Pull Request 기반 개발 흐름
-
-1. feature branch 생성
-2. 코드 작성
-3. 로컬 검사
-4. feature branch push
-5. Pull Request 생성
-6. CI 실행
-7. CI 통과 및 Code Review
-8. master로 merge
-
-### 현재 CI의 한계
-
-- 현재는 `master`에 직접 push할 수 있다.
-- CI가 실패해도 commit은 이미 `master`에 들어갈 수 있다.
-- 아직 Branch Protection이 없기 때문에 CI 결과를 merge 조건으로 강제하지 못한다.
-
-
-
+이 문제를 해결하기 위해 Branch Protection과 Pull Request 기반 개발 방식이 필요하다.
 
 
 ## Lesson 06 - Branch와 Pull Request
 
 ### Branch를 사용하는 이유
 
-- 중요한 브랜치에서 직접 작업하지 않고 독립된 작업 공간에서 변경사항을 개발하기 위해 사용한다.
-- 작업 완료 후 검증된 변경만 master에 반영할 수 있다.
+- 중요한 브랜치에서 직접 작업하지 않기 위해
+- 독립된 작업 공간에서 기능을 개발하기 위해
+- 검증된 변경사항만 master에 반영하기 위해
 
 ### Feature Branch란?
-
-- 특정 기능이나 작업을 수행하기 위해 기준 브랜치에서 분리해서 만든 작업용 브랜치
+- 특정 기능이나 작업을 수행하기 위해 기준 브랜치에서 분리한 작업용 브랜치
 
 ### Pull Request란?
+- 특정 브랜치의 변경사항을 다른 브랜치에 반영하기 전에 검토하는 과정
 
-- 특정 브랜치의 변경사항을 다른 브랜치에 반영하기 전에 검토를 요청하는 과정
-- 코드 변경사항, CI 결과, 리뷰 등을 확인할 수 있다.
+PR에서는 다음을 확인할 수 있다.
 
-### PR과 Merge의 차이
+- 코드 변경사항
+- CI 결과
+- 리뷰
+- 코멘트
 
-- Pull Request: 변경사항을 합치기 위한 검토 과정
-- Merge: 실제로 두 브랜치의 변경사항을 통합하는 작업
+### PR과 Merge 차이
 
-### 현재 작업 흐름
+- Pull Request
+  - 변경사항을 합치기 위한 검토 과정
+
+- Merge
+  - 실제로 두 브랜치의 변경사항을 통합하는 작업
+
+### 기본 작업 흐름
 
 master
 → feature branch
@@ -348,43 +285,71 @@ master
 
 ### Squash and Merge
 
-- feature branch의 여러 commit을 하나의 새로운 commit으로 합쳐 master에 반영한다.
-- master의 history를 비교적 깔끔하게 관리할 수 있다.
-- feature branch의 원래 commit과 master에 생성되는 squash commit은 서로 다른 commit이다.
-
-
-
+- feature branch의 여러 commit을 하나의 새로운 commit으로 합쳐 master에 반영
+- master history를 비교적 깔끔하게 유지할 수 있음
+- feature branch의 원래 commit과 master에 생성되는 squash commit은 서로 다른 commit
 
 
 ## Lesson 07 - Branch Protection
 
 ### Branch Protection이란?
-
 - 중요한 브랜치에 변경사항이 들어오는 방식을 제한하는 규칙
 
 ### CI만으로 부족한 이유
 
-- CI는 문제를 검증할 수 있지만, 기본 설정에서는 문제가 있는 commit이 이미 master에 들어갈 수 있음
+CI는 코드 문제를 검증할 수 있지만,
+기본 설정에서는 문제가 있는 commit이 이미 master에 들어갈 수 있다.
 
-### CI와 Branch Protection의 역할 차이
+### CI와 Branch Protection 역할 차이
 
-- CI: 코드 품질 검사
-- Branch Protection: 검사 결과를 기준으로 merge 가능 여부를 통제
+- CI
+  - 코드 품질 검사
 
-### 적용할 규칙
+- Branch Protection
+  - 검사 결과를 기준으로 merge 가능 여부 통제
 
-- Pull Request 필수
-- CI Status Check 통과 필수
-- Force Push 금지
+### 적용한 Ruleset
 
-### 기대하는 개발 흐름
+- Ruleset 이름: `protect-master`
+- Target branch: `master`
+- Require Pull Request: ON
+- Required approvals: 0
+- Required Status Check: `quality`
+- Force Push 차단
+- Enforcement: Active
+
+### 검증 결과
+
+- CI Workflow의 job 이름인 `quality`를 required status check로 지정
+- `quality` 실패 시 Pull Request의 Merge 버튼이 비활성화되는 것을 확인
+- 테스트 복구 후 CI 통과 시 Merge 가능 상태로 변경되는 것을 확인
+
+### 최종 개발 흐름
 
 feature branch
 → Pull Request
 → CI
-→ CI 통과
-→ Merge
+→ Required Status Check
+→ Merge 허용
 → master
 
-- GitHub Ruleset의 required status check에는 CI Workflow의 job 이름인 `quality`를 지정했다.
-- Required status check가 실패하면 Pull Request의 Merge 버튼이 비활성화되어 master 진입이 실제로 차단되는 것을 확인했다.
+
+## Chapter 00 최종 정리
+
+이번 챕터에서 구성한 기본 개발 파이프라인:
+
+코드 수정
+→ Ruff Format
+→ Ruff Lint
+→ pytest
+→ git add
+→ git commit
+→ feature branch push
+→ Pull Request
+→ GitHub Actions CI
+→ Required Status Check
+→ Squash and Merge
+→ master
+
+핵심 목표는 사람의 기억에 의존하지 않고,
+자동화된 검사와 Git 정책을 이용해 일관된 품질 기준을 유지하는 것이다.
