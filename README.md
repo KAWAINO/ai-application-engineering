@@ -316,10 +316,72 @@ CI(Continuous Integration)는 코드가 Git 저장소에 올라왔을 때
 
 ### Branch를 사용하는 이유
 
+- 중요한 브랜치에서 직접 작업하지 않고 독립된 작업 공간에서 변경사항을 개발하기 위해 사용한다.
+- 작업 완료 후 검증된 변경만 master에 반영할 수 있다.
+
 ### Feature Branch란?
+
+- 특정 기능이나 작업을 수행하기 위해 기준 브랜치에서 분리해서 만든 작업용 브랜치
 
 ### Pull Request란?
 
+- 특정 브랜치의 변경사항을 다른 브랜치에 반영하기 전에 검토를 요청하는 과정
+- 코드 변경사항, CI 결과, 리뷰 등을 확인할 수 있다.
+
 ### PR과 Merge의 차이
 
-### Branch Protection이 필요한 이유
+- Pull Request: 변경사항을 합치기 위한 검토 과정
+- Merge: 실제로 두 브랜치의 변경사항을 통합하는 작업
+
+### 현재 작업 흐름
+
+master
+→ feature branch
+→ 수정
+→ add
+→ commit
+→ push
+→ Pull Request
+→ CI
+→ Merge
+→ master
+
+### Squash and Merge
+
+- feature branch의 여러 commit을 하나의 새로운 commit으로 합쳐 master에 반영한다.
+- master의 history를 비교적 깔끔하게 관리할 수 있다.
+- feature branch의 원래 commit과 master에 생성되는 squash commit은 서로 다른 commit이다.
+
+
+
+
+
+## Lesson 07 - Branch Protection
+
+### Branch Protection이란?
+
+- 중요한 브랜치에 변경사항이 들어오는 방식을 제한하는 규칙
+
+### CI만으로 부족한 이유
+
+- CI는 문제를 검증할 수 있지만, 기본 설정에서는 문제가 있는 commit이 이미 master에 들어갈 수 있음
+
+### CI와 Branch Protection의 역할 차이
+
+- CI: 코드 품질 검사
+- Branch Protection: 검사 결과를 기준으로 merge 가능 여부를 통제
+
+### 적용할 규칙
+
+- Pull Request 필수
+- CI Status Check 통과 필수
+- Force Push 금지
+
+### 기대하는 개발 흐름
+
+feature branch
+→ Pull Request
+→ CI
+→ CI 통과
+→ Merge
+→ master
